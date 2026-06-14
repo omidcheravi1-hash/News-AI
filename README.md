@@ -37,7 +37,7 @@ RSS Feeds (11 منبع) → Claude (ترجمه + رتبه‌بندی) → Telegr
 
 | نام Secret | مقدار |
 |---|---|
-| `ANTHROPIC_API_KEY` | کلید API از [console.anthropic.com](https://console.anthropic.com) |
+| `OPENAI_API_KEY` | کلید API از [platform.openai.com](https://platform.openai.com) |
 | `TELEGRAM_BOT_TOKEN` | توکن ربات از BotFather |
 | `TELEGRAM_CHAT_ID` | شناسه چت یا گروه/کانال |
 

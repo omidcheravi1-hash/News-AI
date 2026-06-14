@@ -2,19 +2,18 @@ import json
 import os
 import re
 
-import anthropic
+from openai import OpenAI
 
-MODEL = "claude-sonnet-4-6"
+MODEL = "gpt-4o"
 MAX_INPUT_ARTICLES = 50
 MAX_OUTPUT_ARTICLES = 10
 
 
 def process_news(articles: list[dict]) -> list[dict]:
-    """Rank, deduplicate, translate and summarise articles in Persian via Claude."""
+    """Rank, deduplicate, translate and summarise articles in Persian via GPT."""
 
-    client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+    client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
-    # Build a condensed representation for the prompt
     condensed = []
     for i, a in enumerate(articles[:MAX_INPUT_ARTICLES]):
         condensed.append(
@@ -38,7 +37,7 @@ def process_news(articles: list[dict]) -> list[dict]:
 
 وظایف:
 ۱. خبرهای تکراری یا خیلی مشابه را حذف کن (یکی نگه‌دار).
-۲. حداکثر {MAX_OUTPUT_ARTICLES} خبر مهم‌ را بر اساس تأثیرگذاری و جذابیت انتخاب کن.
+۲. حداکثر {MAX_OUTPUT_ARTICLES} خبر مهم را بر اساس تأثیرگذاری و جذابیت انتخاب کن.
 ۳. برای هر خبر:
    - عنوان را به فارسی روان و دقیق ترجمه کن.
    - یک خلاصه ۲ تا ۴ جمله‌ای به فارسی بنویس که اهمیت و جزئیات کلیدی را توضیح دهد.
@@ -54,20 +53,25 @@ def process_news(articles: list[dict]) -> list[dict]:
   }}
 ]"""
 
-    response = client.messages.create(
+    response = client.chat.completions.create(
         model=MODEL,
+        messages=[
+            {
+                "role": "system",
+                "content": "تو یک روزنامه‌نگار متخصص هوش مصنوعی هستی که اخبار را به فارسی روان ترجمه و خلاصه می‌کنی.",
+            },
+            {"role": "user", "content": prompt},
+        ],
+        temperature=0.3,
         max_tokens=4096,
-        messages=[{"role": "user", "content": prompt}],
     )
 
-    raw = response.content[0].text.strip()
-    # Strip potential markdown fences
+    raw = response.choices[0].message.content.strip()
     raw = re.sub(r"^```(?:json)?\s*", "", raw)
     raw = re.sub(r"\s*```$", "", raw)
 
     processed: list[dict] = json.loads(raw)
 
-    # Map back to original articles
     article_map = {i: a for i, a in enumerate(articles[:MAX_INPUT_ARTICLES])}
     result = []
     for item in sorted(processed, key=lambda x: x["importance_rank"]):
