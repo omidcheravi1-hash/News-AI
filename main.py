@@ -14,12 +14,16 @@ def _is_tehran_send_window() -> bool:
 
 
 def main() -> None:
-    event = os.environ.get("GITHUB_EVENT_NAME", "manual")
     force = os.environ.get("FORCE_SEND", "false").lower() == "true"
+    # GITHUB_EVENT_NAME is set when running inside GitHub Actions
+    github_event = os.environ.get("GITHUB_EVENT_NAME", "")
 
-    # When triggered on a schedule, only proceed inside the send window.
-    # workflow_dispatch always proceeds so users can test on demand.
-    if event == "schedule" and not force:
+    skip_check = force or github_event == "workflow_dispatch"
+    if not skip_check and github_event != "schedule":
+        # Running via external scheduler (Railway, Render, cron) — always send
+        skip_check = True
+
+    if not skip_check:
         if not _is_tehran_send_window():
             tehran = pytz.timezone("Asia/Tehran")
             now = datetime.now(tehran)
