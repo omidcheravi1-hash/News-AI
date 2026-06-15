@@ -126,7 +126,7 @@ def _clean_description(entry) -> str:
 
 def _fetch_feed(feed_info: dict) -> list[dict]:
     articles = []
-    cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=48)
 
     try:
         feed = feedparser.parse(feed_info["url"], request_headers=HEADERS)

@@ -4,7 +4,7 @@ import re
 
 from openai import OpenAI
 
-MODEL = "meta-llama/llama-3.3-70b-instruct:free"
+MODEL = "google/gemma-2-9b-it:free"
 MAX_INPUT_ARTICLES = 50
 MAX_OUTPUT_ARTICLES = 10
 
