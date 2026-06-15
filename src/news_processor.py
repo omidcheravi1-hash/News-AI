@@ -66,7 +66,7 @@ def process_news(articles: list[dict]) -> list[dict]:
             {"role": "user", "content": prompt},
         ],
         temperature=0.3,
-        max_tokens=4096,
+        max_tokens=3000,
     )
 
     raw = response.choices[0].message.content.strip()
