@@ -4,7 +4,7 @@ import re
 
 from openai import OpenAI
 
-MODEL = "google/gemma-2-9b-it:free"
+MODEL = "openai/gpt-4o"
 MAX_INPUT_ARTICLES = 50
 MAX_OUTPUT_ARTICLES = 10
 
