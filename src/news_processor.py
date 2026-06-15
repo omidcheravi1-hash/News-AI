@@ -4,15 +4,18 @@ import re
 
 from openai import OpenAI
 
-MODEL = "gpt-4o"
+MODEL = "meta-llama/llama-3.3-70b-instruct:free"
 MAX_INPUT_ARTICLES = 50
 MAX_OUTPUT_ARTICLES = 10
 
 
 def process_news(articles: list[dict]) -> list[dict]:
-    """Rank, deduplicate, translate and summarise articles in Persian via GPT."""
+    """Rank, deduplicate, translate and summarise articles in Persian via OpenRouter."""
 
-    client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    client = OpenAI(
+        api_key=os.environ["OPENROUTER_API_KEY"],
+        base_url="https://openrouter.ai/api/v1",
+    )
 
     condensed = []
     for i, a in enumerate(articles[:MAX_INPUT_ARTICLES]):
