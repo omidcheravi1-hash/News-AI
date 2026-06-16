@@ -4,7 +4,7 @@ import re
 
 from openai import OpenAI
 
-MODEL = "openai/gpt-4o"
+MODEL = "google/gemini-2.5-flash"
 MAX_INPUT_ARTICLES = 50
 MAX_OUTPUT_ARTICLES = 10
 
